@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEEP SILENT | shhh</title>
+    <style>
+        /* --- BRAND IDENTITY --- */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --accent-gray: #f4f4f4;
+            --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+        
+        /* --- UTILITIES --- */
+        .uppercase { text-transform: uppercase; }
+        .bold { font-weight: 700; }
+        .flex { display: flex; }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 25px 50px;
+            background: rgba(255, 255, 255, 0.98); z-index: 999;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid transparent; transition: border 0.3s ease;
+        }
+        header.scrolled { border-bottom: 1px solid #eee; padding: 20px 50px; }
+        .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; position: relative; }
+        .cart-trigger { font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; cursor: pointer; }
+
+        /* --- CATEGORIES SECTION (New) --- */
+        .categories-section {
+            padding: 80px 50px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .cat-card {
+            position: relative;
+            height: 300px;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        
+        .cat-card img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%); transition: transform 0.5s;
+        }
+        
+        .cat-overlay {
+            position: absolute;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 15px 30px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid white;
+            z-index: 2;
+        }
+
+        .cat-card:hover img { transform: scale(1.1); }
+
+        /* --- PRODUCT MODAL (For Variants) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .product-modal {
+            background: #fff; width: 900px; max-width: 90%; height: 500px;
+            display: flex; position: relative;
+        }
+
+        .modal-img { width: 50%; height: 100%; background: #eee; }
+        .modal-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+
+        .modal-details { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; background: none; cursor: pointer; }
+
+        .variant-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0;
+        }
+
+        .variant-option {
+            border: 1px solid #ddd; padding: 10px; text-align: center;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .variant-option:hover { border-color: #000; }
+        .variant-option.selected { background: #000; color: #fff; border-color: #000; }
+
+        /* --- HERO & PRODUCTS --- */
+        .hero { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero-title { font-size: 7vw; line-height: 0.85; font-weight: 900; letter-spacing: -3px; }
+        .shop-container { max-width: 1400px; margin: 0 auto; padding: 100px 40px; }
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        
+        .product-card { cursor: pointer; group: 1; }
+        .img-holder { width: 100%; aspect-ratio: 0.8; background-color: var(--accent-gray); margin-bottom: 20px; position: relative; overflow: hidden; }
+        .img-holder img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: transform 0.5s ease; }
+        
+        .add-to-cart-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px;
+            background: rgba(255,255,255,0.9); text-align: center; transform: translateY(100%); transition: 0.3s;
+        }
+        .product-card:hover .add-to-cart-overlay { transform: translateY(0); }
+        .product-card:hover .img-holder img { transform: scale(1.05); }
+
+        .add-btn { background: transparent; border: 1px solid #000; padding: 10px 20px; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; width: 100%; }
+        .add-btn:hover { background: #000; color: #fff; }
+
+        /* --- CART SIDEBAR --- */
+        .cart-overlay-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .cart-overlay-bg.open { opacity: 1; visibility: visible; }
+        .cart-sidebar { position: fixed; top: 0; right: 0; width: 400px; height: 100%; background: #fff; z-index: 1001; transform: translateX(100%); transition: 0.4s; display: flex; flex-direction: column; }
+        .cart-sidebar.open { transform: translateX(0); }
+        .cart-items { flex: 1; overflow-y: auto; padding: 25px; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 25px; }
+        .cart-item img { width: 70px; height: 90px; object-fit: cover; }
+
+        /* Footer */
+        footer { background: #000; color: #fff; padding: 80px 50px; text-align: center; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .product-grid, .categories-section { grid-template-columns: 1fr; }
+            .product-modal { flex-direction: column; height: auto; }
+            .modal-img { width: 100%; height: 200px; }
+            .modal-details { width: 100%; padding: 20px; }
+            .cart-sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="header">
+        <a href="index.html" class="logo uppercase">KEEP SILENT</a>
+        <nav class="nav-links uppercase">
+            <a href="index.html">Home</a>
+            <a href="collections.html">Collections</a> <a href="about.html">About Us</a>
+        </nav>
+        <div class="cart-trigger uppercase" onclick="toggleCart()">Bag (<span id="cart-count">0</span>)</div>
+    </header>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="product-modal">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            <div class="modal-img">
+                <img id="modal-img" src="" alt="">
+            </div>
+            <div class="modal-details">
+                <h2 id="modal-title" class="uppercase bold" style="font-size: 1.5rem; margin-bottom: 10px;">Product Title</h2>
+                <p id="modal-price" style="font-size: 1.2rem; margin-bottom: 20px; color: #666;">$0.00</p>
+                
+                <p class="uppercase" style="font-size: 0.8rem; font-weight: 700;">Select Variant:</p>
+                
+                <div class="variant-grid">
+                    <div class="variant-option" onclick="selectVariant(this)">XS</div>
+                    <div class="variant-option" onclick="selectVariant(this)">S</div>
+                    <div class="variant-option" onclick="selectVariant(this)">M</div>
+                    <div class="variant-option" onclick="selectVariant(this)">L</div>
+                    <div class="variant-option" onclick="selectVariant(this)">XL</div>
+                    <div class="variant-option" onclick="selectVariant(this)">XXL</div>
+                </div>
+
+                <button class="add-btn" style="margin-top: 20px; background: #000; color: white; padding: 15px;" onclick="confirmAddToCart()">ADD TO BAG</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-overlay-bg" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div style="padding: 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <h3 class="uppercase">Your Bag</h3>
+            <button onclick="toggleCart()" style="background:none; font-size: 1.5rem;">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div style="padding: 25px; border-top: 1px solid #eee;">
+            <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:20px;">
+                <span>TOTAL</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button style="width:100%; padding:15px; background:#000; color:#fff; font-weight:700;" onclick="checkout()">CHECKOUT</button>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="hero-title">
+            <span>KEEP</span>
+            <span>SILENT</span>
+        </div>
+        <a href="#shop" style="margin-top: 40px; border-bottom: 2px solid #000; font-weight: 700;">SHOP NOW</a>
+    </section>
+
+    <section id="categories" class="categories-section">
+        <a href="collections.html" class="cat-card">
+            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80&w=600" alt="Tees">
+            <div class="cat-overlay">APPAREL</div>
+        </a>
+        <a href="collections.html" class="cat-card">
+            <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600" alt="Bags">
+            <div class="cat-overlay">ACCESSORIES</div>
+        </a>
+        <a href="collections.html" class="cat-card">
+            <img src="https://images.unsplash.com/photo-1521369909029-2afed882baee?auto=format&fit=crop&q=80&w=600" alt="New">
+            <div class="cat-overlay">NEW DROPS</div>
+        </a>
+    </section>
+
+    <section id="shop" class="shop-container">
+        <h2 class="uppercase bold" style="text-align: center; margin-bottom: 50px;">Latest Items</h2>
+        <div class="product-grid">
+            <div class="product-card" onclick="openModal('Shhh Tote Bag', 45, 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=800')">
+                <div class="img-holder">
+                    <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=800" alt="Tote">
+                    <div class="add-to-cart-overlay"><button class="add-btn">QUICK ADD</button></div>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="bold uppercase">Shhh Tote Bag</span>
+                    <span>$45.00</span>
+                </div>
+            </div>
+
+            <div class="product-card" onclick="openModal('Silent Logo Tee', 55, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800')">
+                <div class="img-holder">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800" alt="Tee">
+                    <div class="add-to-cart-overlay"><button class="add-btn">QUICK ADD</button></div>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="bold uppercase">Silent Logo Tee</span>
+                    <span>$55.00</span>
+                </div>
+            </div>
+
+            <div class="product-card" onclick="openModal('Midnight Cap', 35, 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=800')">
+                <div class="img-holder">
+                    <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=800" alt="Cap">
+                    <div class="add-to-cart-overlay"><button class="add-btn">QUICK ADD</button></div>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span class="bold uppercase">Midnight Cap</span>
+                    <span>$35.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 KEEP SILENT.</p>
+    </footer>
+
+    <script>
+        /* --- CART & MODAL LOGIC --- */
+        let cart = [];
+        let currentProduct = {}; // Stores temp product data before adding to cart
+
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('open');
+            document.querySelector('.cart-overlay-bg').classList.toggle('open');
+        }
+
+        // 1. OPEN MODAL
+        function openModal(title, price, img) {
+            const modal = document.getElementById('productModal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-price').innerText = '$' + price.toFixed(2);
+            document.getElementById('modal-img').src = img;
+            
+            // Store current product data
+            currentProduct = { title, price, img, variant: null };
+            
+            // Reset variant selection
+            document.querySelectorAll('.variant-option').forEach(el => el.classList.remove('selected'));
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        // 2. SELECT VARIANT (The 6 Frames)
+        function selectVariant(element) {
+            // Remove 'selected' class from all options
+            document.querySelectorAll('.variant-option').forEach(el => el.classList.remove('selected'));
+            // Add 'selected' class to clicked option
+            element.classList.add('selected');
+            // Save selection
+            currentProduct.variant = element.innerText;
+        }
+
+        // 3. ADD TO CART WITH VARIANT
+        function confirmAddToCart() {
+            if (!currentProduct.variant) {
+                alert("Please select a size/variant.");
+                return;
+            }
+
+            // Check if item exists (same ID + same variant)
+            const existingItem = cart.find(item => item.title === currentProduct.title && item.variant === currentProduct.variant);
+
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ ...currentProduct, qty: 1, id: Date.now() });
+            }
+
+            updateCartUI();
+            closeModal();
+            toggleCart(); // Open cart to show success
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            const totalEl = document.getElementById('cart-total');
+            const countEl = document.getElementById('cart-count');
+            
+            container.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                count += item.qty;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}">
+                        <div style="flex:1;">
+                            <div class="bold uppercase">${item.title}</div>
+                            <div style="font-size:0.8rem; color:#666;">Size: ${item.variant}</div>
+                            <div>$${item.price} x ${item.qty}</div>
+                        </div>
+                    </div>`;
+            });
+
+            totalEl.innerText = '$' + total.toFixed(2);
+            countEl.innerText = count;
+        }
+
+        function checkout() {
+            alert("Proceeding to checkout...");
+            cart = []; updateCartUI(); toggleCart();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABOUT US | KEEP SILENT</title>
+    <style>
+        /* --- SHARED STYLES --- */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.6; }
+        
+        .uppercase { text-transform: uppercase; }
+        .bold { font-weight: 700; }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%; padding: 25px 50px;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 999;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; }
+
+        /* --- ABOUT CONTENT --- */
+        .page-container {
+            padding-top: 140px; 
+            padding-bottom: 80px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-left: 40px; padding-right: 40px;
+        }
+
+        .about-hero { text-align: center; margin-bottom: 80px; }
+        
+        .about-title {
+            font-size: 4rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px; line-height: 1;
+        }
+
+        .brand-statement {
+            font-size: 1.4rem; font-weight: 400; max-width: 700px; margin: 40px auto;
+            border-left: 4px solid black; padding-left: 30px; text-align: left;
+        }
+
+        .content-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 80px; align-items: center;
+        }
+
+        /* --- THE IMAGE BLOCK --- */
+        .image-block {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-block img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.1); /* High contrast B&W effect */
+        }
+
+        .text-block h3 { font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 1px; }
+        .text-block p { margin-bottom: 25px; color: #333; font-size: 1rem; text-align: justify; }
+        .signature { margin-top: 40px; font-family: 'Courier New', monospace; font-size: 1.1rem; }
+
+        /* --- FOOTER --- */
+        footer { background: #000; color: #fff; padding: 60px 50px; text-align: center; margin-top: 80px; }
+        .footer-logo { font-weight: 900; margin-bottom: 20px; display: inline-block; }
+        .copyright { font-size: 0.7rem; color: #666; margin-top: 20px; display: block; }
+
+        @media (max-width: 768px) {
+            .about-title { font-size: 2.5rem; }
+            .content-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .image-block { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo uppercase">KEEP SILENT</a>
+        <nav class="nav-links uppercase">
+            <a href="index.html">Home</a>
+            <a href="index.html#shop">Shop</a>
+            <a href="about.html" style="text-decoration: underline;">About Us</a>
+        </nav>
+        <div class="uppercase" style="font-size: 0.85rem; font-weight: 600;">Bag (0)</div>
+    </header>
+
+    <div class="page-container">
+        
+        <section class="about-hero">
+            <h1 class="about-title uppercase">In a world full of noise,</h1>
+            <h1 class="about-title uppercase" style="color: #666;">You Keep: Silent.</h1>
+        </section>
+
+        <div class="brand-statement">
+            "Silence is not empty. It’s full of answers. We design for those who speak less but say more."
+        </div>
+
+        <div class="content-grid">
+            <div class="image-block">
+                <img src="owner.jpg" alt="Orm Kornnaphat Keep Silent">
+            </div>
+            
+            <div class="text-block">
+                <h3 class="uppercase bold">The Story</h3>
+                <p>
+                    Founded by <strong>Ma. Cristina Reyes</strong>, Keep Silent is more than just a fashion label; it is a personal narrative. Born from a desire to find quiet confidence amidst the chaos of the entertainment industry, the brand represents the power of understated expression.
+                </p>
+                <p>
+                    We specialize in "comfort-core"—essentials that feel like a second skin. Our monochrome palette and minimalist typography reflect our core belief: that true style doesn't need to shout to be heard.
+                </p>
+                <p>
+                    Every piece is designed with intention. From the heavy-weight cottons to the subtle "shhh" motifs, we invite you to embrace the silence and find strength in it.
+                </p>
+                
+                <div class="signature">
+                    - Ma. Cristina Reyes
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-logo uppercase">KEEP SILENT</div>
+        <div style="font-size: 0.8rem; letter-spacing: 1px;">
+            <a href="#" style="margin: 0 15px; color: #aaa;">INSTAGRAM</a>
+            <a href="#" style="margin: 0 15px; color: #aaa;">CONTACT</a>
+        </div>
+        <span class="copyright">&copy; 2024 KEEP SILENT. shhh.</span>
+    </footer>
+
+</body>
+</html>
